@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no"/>
+    <meta name="renderer" content="webkit"/>
+    <link rel="stylesheet" href="https://unpkg.com/mdui@2/mdui.css">
+    <script src="https://unpkg.com/mdui@2/mdui.global.js"></script>
+    <title>H5录音机</title>
+  </head>
+  <body>
+    <mdui-top-app-bar>
+        <mdui-top-app-bar-title>H5录音机</mdui-top-app-bar-title>
+    </mdui-top-app-bar>
+    <mdui-linear-progress id="pro" style="display: none"></mdui-linear-progress>
+    <br>
+    <mdui-button full-width onclick="main()">开始</mdui-button>
+    <br>
+    <mdui-button full-width id="stop">结束</mdui-button>
+    <div  id="nodisplay" style="display: none">
+        <br>
+        <audio id="audio" controls></audio>
+    </div>
+    <script>
+        mdui.setColorScheme('#7FFF00')
+        chunks = []
+        pro = document.getElementById('pro')
+        nodiv = document.getElementById('nodisplay')
+        stopb = document.getElementById('stop')
+        function main() {
+            pro.style.display = 'none'
+            nodiv.style.display = 'none'
+            navigator.mediaDevices.getUserMedia({ audio: true })
+            .then(function (stream) {
+                var mediaRecorder = new MediaRecorder(stream)
+                mediaRecorder.start()
+                pro.style.display = ''
+                mediaRecorder.ondataavailable = function (res) {
+                    chunks.push(res.data);
+                }
+                stopb.onclick = function () {
+                    mediaRecorder.stop()
+                    mediaRecorder.onstop = function () {
+                        pro.style.display = 'none'
+                        nodiv.style.display = ''
+                        var blob = new Blob(chunks, { type: "audio/ogg; codecs=opus" })
+                        chunks = []
+                        var audioURL = window.URL.createObjectURL(blob);
+                        audio.src = audioURL
+                    }
+                }
+            })
+        }
+    </script>
+  </body>
+</html>
