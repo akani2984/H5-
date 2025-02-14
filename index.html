@@ -24,15 +24,15 @@
     </div>
     <script>
         //mdui.setColorScheme('#7FFF00')
-        chunks = []
+        //chunks = []
         download = document.getElementById('download')
         pro = document.getElementById('pro')
         nodiv = document.getElementById('nodisplay')
         startb = document.getElementById('start')
         stopb = document.getElementById('stop')
         options = {
-            'MimeType' : 'audio/webm',
-            'audioBitsPerSecond' : '1024000'
+            MimeType : 'audio/webm',
+            audioBitsPerSecond : 1024000
         }
         navigator.mediaDevices.getUserMedia({ audio: true })
         .then(function (stream) {
