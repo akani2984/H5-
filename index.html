@@ -14,43 +14,44 @@
     </mdui-top-app-bar>
     <mdui-linear-progress id="pro" style="display: none"></mdui-linear-progress>
     <br>
-    <mdui-button full-width onclick="main()">开始</mdui-button>
+    <mdui-button full-width id="start">开始</mdui-button>
     <br>
     <mdui-button full-width id="stop">结束</mdui-button>
     <div  id="nodisplay" style="display: none">
         <br>
-        <audio style="width: 100%" id="audio" controls></audio>
+        <audio id="audio" controls style="width: 100%;"></audio>
     </div>
     <script>
         mdui.setColorScheme('#7FFF00')
         chunks = []
         pro = document.getElementById('pro')
         nodiv = document.getElementById('nodisplay')
+        startb = document.getElementById('start')
         stopb = document.getElementById('stop')
-        function main() {
-            pro.style.display = 'none'
-            nodiv.style.display = 'none'
-            navigator.mediaDevices.getUserMedia({ audio: true })
-            .then(function (stream) {
-                var mediaRecorder = new MediaRecorder(stream)
-                mediaRecorder.start()
+        navigator.mediaDevices.getUserMedia({ audio: true })
+        .then(function (stream) {
+            var mediaRecorder = new MediaRecorder(stream)
+            startb.onclick = function () {
                 pro.style.display = ''
-                mediaRecorder.ondataavailable = function (res) {
-                    chunks.push(res.data);
-                }
-                stopb.onclick = function () {
-                    mediaRecorder.stop()
-                    mediaRecorder.onstop = function () {
-                        pro.style.display = 'none'
-                        nodiv.style.display = ''
-                        var blob = new Blob(chunks, { type: "audio/ogg; codecs=opus" })
-                        chunks = []
-                        var audioURL = window.URL.createObjectURL(blob);
-                        audio.src = audioURL
+                nodiv.style.display = 'none'
+                mediaRecorder.start()
+                audio.pause()
+        }
+            mediaRecorder.ondataavailable = function (res) {
+                    chunks.push(res.data)
+            }
+            stopb.onclick = function () {
+                mediaRecorder.stop()
+                mediaRecorder.onstop = function () {
+                    pro.style.display = 'none'
+                    nodiv.style.display = ''
+                    var blob = new Blob(chunks, { type: "audio/ogg; codecs=opus" })
+                    chunks = []
+                    var audioURL = window.URL.createObjectURL(blob);
+                    audio.src = audioURL
                     }
                 }
             })
-        }
     </script>
   </body>
 </html>
