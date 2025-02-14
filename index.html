@@ -30,9 +30,13 @@
         nodiv = document.getElementById('nodisplay')
         startb = document.getElementById('start')
         stopb = document.getElementById('stop')
+        options = {
+            'MimeType' : 'audio/webm',
+            'audioBitsPerSecond' : '1024000'
+        }
         navigator.mediaDevices.getUserMedia({ audio: true })
         .then(function (stream) {
-            var mediaRecorder = new MediaRecorder(stream)
+            var mediaRecorder = new MediaRecorder(stream,options)
             startb.onclick = function () {
                 pro.style.display = ''
                 nodiv.style.display = 'none'
@@ -47,7 +51,7 @@
                 mediaRecorder.onstop = function () {
                     pro.style.display = 'none'
                     nodiv.style.display = ''
-                    blob = new Blob(chunks, { type: "audio/ogg" })
+                    blob = new Blob(chunks, { type: "audio/webm" })
                     chunks = []
                     var audioURL = window.URL.createObjectURL(blob);
                     audio.src = audioURL
