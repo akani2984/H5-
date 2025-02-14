@@ -45,7 +45,7 @@
                 mediaRecorder.onstop = function () {
                     pro.style.display = 'none'
                     nodiv.style.display = ''
-                    var blob = new Blob(chunks, { type: "audio/ogg; codecs=opus" })
+                    var blob = new Blob(chunks, { type: "audio/aac; codecs=aac" })
                     chunks = []
                     var audioURL = window.URL.createObjectURL(blob);
                     audio.src = audioURL
