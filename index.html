@@ -24,37 +24,50 @@
     </div>
     <script>
         //mdui.setColorScheme('#7FFF00')
+        var mediaRecorder
+        const constraints = {
+                audio: {
+                    echoCancellation: true,
+                    noiseSuppression: true,
+                    sampleRate: 48000
+                },
+                video: false
+            }
         //chunks = []
+        var mediaRecorder
         download = document.getElementById('download')
         pro = document.getElementById('pro')
         nodiv = document.getElementById('nodisplay')
         startb = document.getElementById('start')
         stopb = document.getElementById('stop')
-        options = {
-            MimeType : 'audio/webm',
-            audioBitsPerSecond : 1024000
-        }
-        navigator.mediaDevices.getUserMedia({ audio: true })
+        navigator.mediaDevices.getUserMedia(constraints)
         .then(function (stream) {
-            var mediaRecorder = new MediaRecorder(stream,options)
+            mediaRecorder = new MediaRecorder(stream,{mimeType: "video/mp4"})
             startb.onclick = function () {
                 pro.style.display = ''
                 nodiv.style.display = 'none'
-                mediaRecorder.start()
                 audio.pause()
+                //chunks = []
+                mediaRecorder.start()
         }
-            mediaRecorder.ondataavailable = function (res) {
+        mediaRecorder.ondataavailable = function (res) {
+                    //chunks.push(res.data)
                     pro.style.display = 'none'
                     nodiv.style.display = ''
-                    var audioURL = window.URL.createObjectURL(res.data);
+                    //blob = new Blob(res.data, { type: "audio/ogg" })
+                    var audioURL = window.URL.createObjectURL(res.data)
                     audio.src = audioURL
                     download.href = audioURL
                     download.click()
             }
             stopb.onclick = function () {
                 mediaRecorder.stop()
-                }
-            })
+            }
+            mediaRecorder.onstop = function () {
+                    
+            }
+        })
+        
     </script>
   </body>
 </html>
