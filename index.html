@@ -42,7 +42,7 @@
         stopb = document.getElementById('stop')
         navigator.mediaDevices.getUserMedia(constraints)
         .then(function (stream) {
-            mediaRecorder = new MediaRecorder(stream,{mimeType: "audio/mp4"})
+            mediaRecorder = new MediaRecorder(stream)
             startb.onclick = function () {
                 pro.style.display = ''
                 nodiv.style.display = 'none'
@@ -50,7 +50,6 @@
                 mediaRecorder.start()
         }
         mediaRecorder.ondataavailable = function (res) {
-                    //chunks.push(res.data)
                     pro.style.display = 'none'
                     nodiv.style.display = ''
                     var audioURL = window.URL.createObjectURL(res.data)
