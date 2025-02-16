@@ -46,6 +46,7 @@
                 audioBitsPerSecond: 512000,
             })
             startb.onclick = function () {
+                recorder.reset()
                 recorder.startRecording()
                 pro.style.display = ''
                 audio.pause()
