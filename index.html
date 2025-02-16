@@ -6,6 +6,7 @@
     <meta name="renderer" content="webkit"/>
     <link rel="stylesheet" href="https://unpkg.com/mdui@2/mdui.css">
     <script src="https://unpkg.com/mdui@2/mdui.global.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/RecordRTC/5.5.6/RecordRTC.js"></script>
     <title>H5录音机</title>
   </head>
   <body>
@@ -18,13 +19,9 @@
     <mdui-button full-width id="start">开始</mdui-button>
     <br>
     <mdui-button full-width id="stop">结束</mdui-button>
-    <div  id="nodisplay" style="display: none">
         <br>
-        <audio id="audio" controls style="width: 100%;"></audio>
-    </div>
+        <audio style="display: none; width: 100%" id="audio" controls ></audio>
     <script>
-        //mdui.setColorScheme('#7FFF00')
-        var mediaRecorder
         const constraints = {
                 audio: {
                     echoCancellation: true,
@@ -33,35 +30,36 @@
                 },
                 video: false
             }
-        //chunks = []
-        var mediaRecorder
         download = document.getElementById('download')
         pro = document.getElementById('pro')
         nodiv = document.getElementById('nodisplay')
         startb = document.getElementById('start')
         stopb = document.getElementById('stop')
+        audio = document.getElementById('audio')
         navigator.mediaDevices.getUserMedia(constraints)
         .then(function (stream) {
-            mediaRecorder = new MediaRecorder(stream)
+            recorder = RecordRTC(stream, {
+                type: 'audio',
+                mimeType: 'audio/wav',
+                recorderType: StereoAudioRecorder,
+                timeSlice: 1000,
+                audioBitsPerSecond: 512000,
+            })
             startb.onclick = function () {
+                recorder.startRecording()
                 pro.style.display = ''
-                nodiv.style.display = 'none'
                 audio.pause()
-                mediaRecorder.start()
-        }
-        mediaRecorder.ondataavailable = function (res) {
-                    pro.style.display = 'none'
-                    nodiv.style.display = ''
-                    var audioURL = window.URL.createObjectURL(res.data)
-                    audio.src = audioURL
-                    download.href = audioURL
-                    download.click()
+                audio.style.display = 'none'
             }
             stopb.onclick = function () {
-                mediaRecorder.stop()
-            }
-            mediaRecorder.onstop = function () {
-                    
+                recorder.stopRecording(function () {
+                    let blob = recorder.getBlob()
+                    download.href = URL.createObjectURL(blob)
+                    download.click()
+                    audio.src = download.href
+                    audio.style.display = ''
+                    pro.style.display = 'none'
+                })
             }
         })
         
